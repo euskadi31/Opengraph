@@ -18,7 +18,18 @@ $writer->append(Opengraph\Writer::OG_TYPE, Opengraph\Writer::TYPE_VIDEO_MOVIE);
 $writer->append(Opengraph\Writer::OG_URL, 'http://www.imdb.com/title/tt0117500/');
 $writer->append(Opengraph\Writer::OG_IMAGE, 'http://ia.media-imdb.com/images/rock.jpg');
 
+echo $writer->render() . PHP_EOL;
+
 ?>
+```
+
+Output
+
+``` html
+    <meta property="og:title" content="The Rock" />
+    <meta property="og:type" content="video.movie" />
+    <meta property="og:url" content="http://www.imdb.com/title/tt0117500/" />
+    <meta property="og:image" content="http://ia.media-imdb.com/images/rock.jpg" />
 ```
 
 ## Reader
