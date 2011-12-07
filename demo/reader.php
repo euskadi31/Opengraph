@@ -9,5 +9,5 @@ require_once __DIR__ . '/../library/Opengraph/Reader.php';
 use Opengraph;
 
 $reader = new Opengraph\Reader();
-$reader->parse(file_get_contents('./images.html'));
+$reader->parse(file_get_contents('http://www.imdb.com/title/tt0117500/'));
 print_r($reader->getArrayCopy());
