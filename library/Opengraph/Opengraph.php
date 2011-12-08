@@ -142,8 +142,8 @@ abstract class Opengraph implements Iterator, Serializable, Countable
             case self::OG_LOCALE:
             case self::OG_SITE_NAME:
                 if($this->hasMeta($property)) {
-                    //$this->removeMeta($property);
-                    $this->getMeta($property)->setContent($content);
+                    $this->removeMeta($property);
+                    //$this->getMeta($property)->setContent($content);
                 }
                 break;
         }
@@ -187,7 +187,7 @@ abstract class Opengraph implements Iterator, Serializable, Countable
     {
         foreach(static::$storage as $meta) {
             if($meta->getProperty() == $property) {
-                return $meta;
+                return $meta->getContent();
             }
         }
         

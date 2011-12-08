@@ -1,5 +1,11 @@
 # Opengraph
 
+## Test with [Atoum](https://github.com/mageekguy/atoum)
+
+	cd Opengraph/
+	php library/mageekguy.atoum.phar -d Tests/Units/
+
+
 ## Writer
 
 ``` php

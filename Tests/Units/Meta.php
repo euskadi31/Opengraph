@@ -26,5 +26,22 @@ class Meta extends Opengraph\Test\Unit
         $this->assert->string($meta->render())
             ->isEqualTo('<meta property="og:title" content="test" />');
         
+        $meta->setProperty(Opengraph\Opengraph::OG_TYPE);
+        
+        $this->assert->string($meta->getProperty())
+            ->isEqualTo('og:type');
+        
+        $meta->setContent(Opengraph\Opengraph::TYPE_BOOK);
+        
+        $this->assert->string($meta->getContent())
+            ->isEqualTo('book');
+        
+        $this->assert->string($meta->render())
+            ->isEqualTo('<meta property="og:type" content="book" />');
+        
+        $meta->setContent(array(123, 456));
+        
+        $this->assert->string($meta->render())
+            ->isEqualTo('<meta property="og:type" content="123,456" />');
     }
 }

@@ -22,18 +22,12 @@ class Reader extends Opengraph\Test\Unit
     
     public function testReader()
     {
-        $html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-        <html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml">
-        <head>
-        <title>Skyfall (2012) - IMDb</title>
-        <meta property="og:url" content="http://www.imdb.com/title/tt1074638/" />
+        $html = '<meta property="og:url" content="http://www.imdb.com/title/tt1074638/" />
         <meta property="og:title" content="Skyfall (2012)"/>
         <meta property="og:type" content="video.movie"/>
         <meta property="og:image" content="http://ia.media-imdb.com/images/M/MV5BMTczMjQ5NjE4NV5BMl5BanBnXkFtZTcwMjk0NjAwNw@@._V1._SX95_SY140_.jpg"/>
         <meta property="og:site_name" content="IMDb"/>
-        <meta property="fb:app_id" content="115109575169727"/>
-        </head>
-        <body><h1>test</h1></body></html>';
+        <meta property="fb:app_id" content="115109575169727"/>';
         
         $reader = new Opengraph\Reader();
         
@@ -87,5 +81,10 @@ class Reader extends Opengraph\Test\Unit
         $this->assert->integer($reader->key())
             ->isEqualTo(0);
         
+        $this->assert->exception(function() use ($reader) {
+        	$reader->parse('');
+        })
+        ->isInstanceOf('\RuntimeException')
+        ->hasMessage('Contents is empty');
     }
 }

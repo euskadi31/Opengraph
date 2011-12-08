@@ -13,6 +13,7 @@
 namespace Opengraph;
 
 use DOMDocument;
+use RuntimeException;
 
 class Reader extends Opengraph
 {
@@ -37,7 +38,10 @@ class Reader extends Opengraph
         $old_libxml_error = libxml_use_internal_errors(true);
         
         $dom = new DOMDocument;
-        $dom->loadHTML($contents);
+        
+        if(@$dom->loadHTML($contents) === false) {
+            throw new RuntimeException("Contents is empty");
+        }
         
         libxml_use_internal_errors($old_libxml_error);
         
