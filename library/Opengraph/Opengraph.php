@@ -135,6 +135,19 @@ abstract class Opengraph implements Iterator, Serializable, Countable
     {
         $content = $this->_normalizeContent($property, $content);
         
+        switch($property) {
+            case self::OG_TITLE:
+            case self::OG_TYPE:
+            case self::OG_DESCRIPTION:
+            case self::OG_LOCALE:
+            case self::OG_SITE_NAME:
+                if($this->hasMeta($property)) {
+                    //$this->removeMeta($property);
+                    $this->getMeta($property)->setContent($content);
+                }
+                break;
+        }
+        
         if($position == self::APPEND) {
             static::$storage->append(new Meta($property, $content));
         } else {
@@ -145,7 +158,59 @@ abstract class Opengraph implements Iterator, Serializable, Countable
         }
         
         return $this;
-    }    
+    }
+    
+    /**
+     * Check is meta exists
+     * 
+     * @param String $property
+     * @return Boolean
+     */
+    public function hasMeta($property)
+    {
+        foreach(static::$storage as $meta) {
+            if($meta->getProperty() == $property) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Get meta by property name
+     * 
+     * @param String $property
+     * @return \Opengraph\Meta
+     */
+    public function getMeta($property)
+    {
+        foreach(static::$storage as $meta) {
+            if($meta->getProperty() == $property) {
+                return $meta;
+            }
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Remove meta
+     * 
+     * @param String $property
+     * @return Boolean
+     */
+    public function removeMeta($property)
+    {
+        foreach(static::$storage as $i => $meta) {
+            if($meta->getProperty() == $property) {
+                unset(static::$storage[$i]);
+                return true;
+            }
+        }
+        
+        return false;
+    }
     
     /**
      * @return \ArrayObject

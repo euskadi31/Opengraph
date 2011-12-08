@@ -36,6 +36,19 @@ class Meta
     }
     
     /**
+     * Set property
+     * 
+     * @param String $property
+     * @return \Opengraph\Meta
+     */
+    public function setProperty($property)
+    {
+        $this->_property = $property;
+        
+        return $this;
+    }
+    
+    /**
      * Get property name
      * 
      * @return String
@@ -43,6 +56,19 @@ class Meta
     public function getProperty()
     {
         return $this->_property;
+    }
+    
+    /**
+     * Set content
+     * 
+     * @param String $content
+     * @return \Opengraph\Meta
+     */
+    public function setContent($content)
+    {
+        $this->_content = $content;
+        
+        return $this;
     }
     
     /**
