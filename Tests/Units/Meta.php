@@ -2,9 +2,9 @@
 
 namespace Opengraph\Tests\Units;
 
-require_once __DIR__ . '/../../library/Opengraph/Test/Unit.php';
-require_once __DIR__ . '/../../library/Opengraph/Meta.php';
-require_once __DIR__ . '/../../library/Opengraph/Opengraph.php';
+require_once __DIR__ . '/../../src/Opengraph/Test/Unit.php';
+require_once __DIR__ . '/../../src/Opengraph/Meta.php';
+require_once __DIR__ . '/../../src/Opengraph/Opengraph.php';
 
 use Opengraph;
 

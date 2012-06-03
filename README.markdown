@@ -3,7 +3,7 @@
 ## Test with [Atoum](https://github.com/mageekguy/atoum)
 
 	cd Opengraph/
-	php library/mageekguy.atoum.phar -d Tests/Units/
+	php src/mageekguy.atoum.phar -d Tests/Units/
 
 
 ## Writer
@@ -12,9 +12,9 @@
 <?php
 namespace Application;
 
-require_once __DIR__ . '/../library/Opengraph/Meta.php';
-require_once __DIR__ . '/../library/Opengraph/Opengraph.php';
-require_once __DIR__ . '/../library/Opengraph/Writer.php';
+require_once __DIR__ . '/../src/Opengraph/Meta.php';
+require_once __DIR__ . '/../src/Opengraph/Opengraph.php';
+require_once __DIR__ . '/../src/Opengraph/Writer.php';
 
 use Opengraph;
 
@@ -44,9 +44,9 @@ Output
 <?php
 namespace Application;
 
-require_once __DIR__ . '/../library/Opengraph/Meta.php';
-require_once __DIR__ . '/../library/Opengraph/Opengraph.php';
-require_once __DIR__ . '/../library/Opengraph/Reader.php';
+require_once __DIR__ . '/../src/Opengraph/Meta.php';
+require_once __DIR__ . '/../src/Opengraph/Opengraph.php';
+require_once __DIR__ . '/../src/Opengraph/Reader.php';
 
 use Opengraph;
 

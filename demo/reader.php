@@ -2,9 +2,9 @@
 
 namespace Application;
 
-require_once __DIR__ . '/../library/Opengraph/Meta.php';
-require_once __DIR__ . '/../library/Opengraph/Opengraph.php';
-require_once __DIR__ . '/../library/Opengraph/Reader.php';
+require_once __DIR__ . '/../src/Opengraph/Meta.php';
+require_once __DIR__ . '/../src/Opengraph/Opengraph.php';
+require_once __DIR__ . '/../src/Opengraph/Reader.php';
 
 use Opengraph;
 
