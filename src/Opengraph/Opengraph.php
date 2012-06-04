@@ -117,7 +117,7 @@ abstract class Opengraph implements Iterator, Serializable, Countable
     
     public function __construct()
     {
-        if(is_null(self::$storage)) {
+        if(is_null(static::$storage)) {
             static::$storage = new ArrayObject();
             //static::$position = 0;
         }
@@ -141,6 +141,7 @@ abstract class Opengraph implements Iterator, Serializable, Countable
             case self::OG_DESCRIPTION:
             case self::OG_LOCALE:
             case self::OG_SITE_NAME:
+            case self::OG_URL:
                 if($this->hasMeta($property)) {
                     $this->removeMeta($property);
                     //$this->getMeta($property)->setContent($content);
