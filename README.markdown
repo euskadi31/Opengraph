@@ -1,5 +1,7 @@
 # Opengraph
 
+[![Build Status](https://secure.travis-ci.org/euskadi31/Opengraph.png)](http://travis-ci.org/euskadi31/Opengraph)
+
 ## Test with [Atoum](https://github.com/mageekguy/atoum)
 
 	cd Opengraph/
