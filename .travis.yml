@@ -2,5 +2,7 @@ language: php
 php:
   - 5.3
   - 5.4
-before_script: wget http://downloads.atoum.org/nightly/mageekguy.atoum.phar
-script: php mageekguy.atoum.phar -d Tests/Units/
+before_script: 
+    - curl -s https://getcomposer.org/installer | php
+    - php composer.phar install
+script: ./vendor/mageekguy/atoum/bin/atoum --glob Tests/Units/

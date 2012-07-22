@@ -12,16 +12,14 @@
  */
 namespace Opengraph\Test;
 
-require_once __DIR__ . '/../../mageekguy.atoum.phar';
-
 use \mageekguy\atoum;
+use \mageekguy\atoum\factory;
 
 abstract class Unit extends atoum\test 
 {
-    public function __construct(score $score = null, locale $locale = null, adapter $adapter = null)
+    public function __construct(factory $factory = null)
     {
-        $this->setTestNamespace('Tests\Units');
-
-        parent::__construct($score, $locale, $adapter);
+        $this->setTestNamespace('Tests\\Units');
+        parent::__construct($factory);
     }
 }
