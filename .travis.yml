@@ -4,5 +4,5 @@ php:
   - 5.4
 before_script: 
     - curl -s https://getcomposer.org/installer | php
-    - php composer.phar install
-script: ./vendor/mageekguy/atoum/bin/atoum --glob Tests/Units/
+    - php composer.phar install --dev
+script: ./vendor/atoum/atoum/bin/atoum --glob Tests/Units/
