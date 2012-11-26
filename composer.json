@@ -12,8 +12,10 @@
         }
     ],
     "require": {
-        "php": ">=5.3.0",
-        "mageekguy/atoum": "master-dev"
+        "php": ">=5.3.0"
+    },
+    "require-dev": {
+        "atoum/atoum": "master-dev"
     },
     "autoload": {
         "psr-0": {
