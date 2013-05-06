@@ -86,5 +86,33 @@ class Reader extends Opengraph\Test\Unit
         })
         ->isInstanceOf('\RuntimeException')
         ->hasMessage('Contents is empty');
+
+        $html = '<meta property="og:url" content="http://www.imdb.com/title/tt1074638/" />
+        <meta property="og:title" content="Skyfall (2012)"/>
+        <meta property="og:type" content="video.movie"/>
+        <meta property="og:image" content="http://ia.media-imdb.com/images/M/MV5BMTczMjQ5NjE4NV5BMl5BanBnXkFtZTcwMjk0NjAwNw@@._V1._SX95_SY140_.jpg"/>
+        <meta property="og:site_name" content="IMDb"/>';
+        
+        $reader = new Opengraph\Reader();
+        
+        $this->assert->object($reader)
+            ->isInstanceOf('\Opengraph\Reader');
+        
+        $reader->parse($html);
+
+        $this->assert->integer($reader->count())
+            ->isEqualTo(5);
+        
+        $this->assert->array($reader->getArrayCopy())->isEqualTo(array(
+            'og:url' => 'http://www.imdb.com/title/tt1074638/',
+            'og:title' => 'Skyfall (2012)',
+            'og:type' => 'video.movie',
+            'og:image' => array(
+                0 => array(
+                    'og:image:url' => 'http://ia.media-imdb.com/images/M/MV5BMTczMjQ5NjE4NV5BMl5BanBnXkFtZTcwMjk0NjAwNw@@._V1._SX95_SY140_.jpg',
+                ),
+            ),
+            'og:site_name' => 'IMDb'
+        ));
     }
 }
