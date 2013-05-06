@@ -12,11 +12,11 @@
  */
 namespace Opengraph;
 
-use ArrayObject,
-    Iterator,
-    ArrayIterator,
-    Serializable,
-    Countable;
+use ArrayObject;
+use Iterator;
+use ArrayIterator;
+use Serializable;
+use Countable;
 
 abstract class Opengraph implements Iterator, Serializable, Countable
 {
@@ -387,44 +387,84 @@ abstract class Opengraph implements Iterator, Serializable, Countable
         return $graph;
     }    
     
-    
+    /**
+     * Rewind the Iterator to the first element
+     * 
+     * @return void
+     */
     public function rewind()
     { 
         reset(static::$storage); 
         $this->_position = 0; 
     }
     
+    /**
+     * Return the current element
+     * 
+     * @return mixed
+     */
     public function current()
     {
         return current(static::$storage);
     }
     
+    /**
+     * Return the key of the current element
+     * 
+     * @return scalar
+     */
 	public function key()
 	{
 	    return key(static::$storage);
 	}
 	
+    /**
+     * Move forward to next element
+     * 
+     * @return void
+     */
     public function next()
     {
         next(static::$storage); 
         ++$this->_position; 
     }
     
+    /**
+     * Checks if current position is valid
+     * 
+     * @return boolean
+     */
     public function valid()
     {
         return $this->_position < sizeof(static::$storage); 
     }
     
+    /**
+     * Count elements of an object
+     * 
+     * @return integer
+     */
     public function count()
     {
         return count(static::$storage);
     }
     
+    /**
+     * String representation of object
+     * 
+     * @return string
+     */
     public function serialize() 
     {
         return serialize(static::$storage);
     }
     
+    /**
+     * Constructs the object form string
+     * 
+     * @param  string $data The string representation of the object. 
+     * @return void
+     */
     public function unserialize($data) 
     {
         static::$storage = unserialize($data);
