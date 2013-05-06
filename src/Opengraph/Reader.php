@@ -14,6 +14,7 @@ namespace Opengraph;
 
 use DOMDocument;
 use RuntimeException;
+use ArrayObject;
 
 class Reader extends Opengraph
 {
@@ -22,11 +23,11 @@ class Reader extends Opengraph
      */
     protected static $storage;
     
-    /**
-     * @var Integer
-     */
-    //protected static $position;
-    
+    public function __construct()
+    {
+        static::$storage = new ArrayObject();
+    }
+
     /**
      * Parse html tags
      * 
