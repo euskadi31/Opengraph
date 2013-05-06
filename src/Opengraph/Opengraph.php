@@ -117,10 +117,7 @@ abstract class Opengraph implements Iterator, Serializable, Countable
     
     public function __construct()
     {
-        if(is_null(static::$storage)) {
-            static::$storage = new ArrayObject();
-            //static::$position = 0;
-        }
+        static::$storage = new ArrayObject();
     }
     
     /**
