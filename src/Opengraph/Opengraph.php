@@ -27,7 +27,7 @@ abstract class Opengraph implements Iterator, Serializable, Countable
     const OG_TYPE               = 'og:type';
     const OG_IMAGE              = 'og:image';
     const OG_URL                = 'og:url';
-    
+
     /**
      * Optional Metadata
      */
@@ -35,30 +35,30 @@ abstract class Opengraph implements Iterator, Serializable, Countable
     const OG_IMAGE_TYPE         = 'og:image:type';
     const OG_IMAGE_WIDTH        = 'og:image:width';
     const OG_IMAGE_HEIGHT       = 'og:image:height';
-    
+
     const OG_AUDIO              = 'og:audio';
     const OG_AUDIO_SECURE_URL   = 'og:audio:secure_url';
     const OG_AUDIO_TYPE         = 'og:audio:type';
-    
+
     const OG_DESCRIPTION        = 'og:description';
     const OG_DETERMINER         = 'og:determiner';
     const OG_LOCALE             = 'og:locale';
     const OG_LOCALE_ALTERNATE   = 'og:locale:alternate';
     const OG_SITE_NAME          = 'og:site_name';
-    
+
     const OG_VIDEO              = 'og:video';
     const OG_VIDEO_SECURE_URL   = 'og:video:secure_url';
     const OG_VIDEO_TYPE         = 'og:video:type';
     const OG_VIDEO_WIDTH        = 'og:video:width';
     const OG_VIDEO_HEIGHT       = 'og:video:height';
-    
+
     /**
      * Facebook Metadata
      */
     const FB_ADMINS             = 'fb:admins';
     const FB_PAGE               = 'fb:page_id';
     const FB_APP                = 'fb:app_id';
-    
+
     /**
      * DEPRECATED PROPERTIES!  DO NOT READ ON UNLESS YOU MUST!
      */
@@ -77,9 +77,7 @@ abstract class Opengraph implements Iterator, Serializable, Countable
     const OG_AUDIO_TITLE        = 'og:audio:title';
     const OG_AUDIO_ARTIST       = 'og:audio:artist';
     const OG_AUDIO_ALBUM        = 'og:audio:album';
-    
-    
-    
+
     /**
      * Types
      */
@@ -87,7 +85,7 @@ abstract class Opengraph implements Iterator, Serializable, Countable
     const TYPE_MUSIC_ALBUM          = 'music.album';
     const TYPE_MUSIC_PLAYLIST       = 'music.playlist';
     const TYPE_MUSIC_RADIOSTATION   = 'music.radio_station';
-    
+
     const TYPE_VIDEO_MOVIE          = 'video.movie';
     const TYPE_VIDEO_EPISODE        = 'video.episode';
     const TYPE_VIDEO_TVSHOW         = 'video.tv_show';
@@ -97,24 +95,33 @@ abstract class Opengraph implements Iterator, Serializable, Countable
     const TYPE_BOOK                 = 'book';
     const TYPE_PROFILE              = 'profile';
     const TYPE_WEBSITE              = 'website';
-    
+
+    /**
+     * Article content fields
+     */
+    const ARTICLE_PUBLISHED_TIME    = 'article:published_time';
+    const ARTICLE_MODIFIED_TIME     = 'article:modified_time';
+    const ARTICLE_AUTHOR            = 'article:author';
+    const ARTICLE_SECTION           = 'article:section';
+    const ARTICLE_TAG               = 'article:tag';
+
     /**
      * Positions
      */
     const APPEND                = 'append';
     const PREPEND               = 'prepend';
-    
+
     /**
      * @var \ArrayObject
      */
     protected static $storage;
-    
+
     /**
      * @var Integer
      */
     protected $_position = 0;
-    
-    
+
+
     public function __construct()
     {
         if(is_null(static::$storage)) {
@@ -122,10 +129,10 @@ abstract class Opengraph implements Iterator, Serializable, Countable
             //static::$position = 0;
         }
     }
-    
+
     /**
      * Add meta
-     * 
+     *
      * @param String $property
      * @param Mixed $content
      * @param String $position
@@ -134,7 +141,7 @@ abstract class Opengraph implements Iterator, Serializable, Countable
     public function addMeta($property, $content, $position)
     {
         $content = $this->_normalizeContent($property, $content);
-        
+
         switch($property) {
             case self::OG_TITLE:
             case self::OG_TYPE:
@@ -148,7 +155,7 @@ abstract class Opengraph implements Iterator, Serializable, Countable
                 }
                 break;
         }
-        
+
         if($position == self::APPEND) {
             static::$storage->append(new Meta($property, $content));
         } else {
@@ -157,13 +164,13 @@ abstract class Opengraph implements Iterator, Serializable, Countable
             static::$storage->exchangeArray($values);
             unset($values);
         }
-        
+
         return $this;
     }
-    
+
     /**
      * Check is meta exists
-     * 
+     *
      * @param String $property
      * @return Boolean
      */
@@ -174,13 +181,13 @@ abstract class Opengraph implements Iterator, Serializable, Countable
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
     /**
      * Get meta by property name
-     * 
+     *
      * @param String $property
      * @return \Opengraph\Meta
      */
@@ -191,13 +198,13 @@ abstract class Opengraph implements Iterator, Serializable, Countable
                 return $meta->getContent();
             }
         }
-        
+
         return false;
     }
-    
+
     /**
      * Remove meta
-     * 
+     *
      * @param String $property
      * @return Boolean
      */
@@ -209,10 +216,10 @@ abstract class Opengraph implements Iterator, Serializable, Countable
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
     /**
      * @return \ArrayObject
      */
@@ -220,10 +227,10 @@ abstract class Opengraph implements Iterator, Serializable, Countable
     {
         return static::$storage;
     }
-    
+
     /**
      * Normalize content
-     * 
+     *
      * @param String $property
      * @param Mixed $content
      * @return Mixed
@@ -233,36 +240,36 @@ abstract class Opengraph implements Iterator, Serializable, Countable
         if($property == self::FB_ADMINS && is_string($content)) {
             return (array)explode(',', $content);
         }
-        
+
         return $content;
     }
-    
+
     /**
      * Get array
-     * 
+     *
      * @return Array
      */
     public function getArrayCopy()
     {
         $graph = array();
-        
+
         $metas = static::$storage->getArrayCopy();
 
         foreach($metas as $i => $meta) {
-            
+
             $property   = $meta->getProperty();
             $content    = $meta->getContent();
-            
+
             switch($property) {
-                
+
                 case self::OG_IMAGE:
 
                     $data = array(
                         $property . ':url' => $content
                     );
-                    
+
                     for($j = ($i+1); $j <= ($i+4); $j++) {
-                        
+
                         if(isset($metas[$j])) {
                             $next = $metas[$j];
 
@@ -283,21 +290,21 @@ abstract class Opengraph implements Iterator, Serializable, Countable
                             }
                         }
                     }
-                    
+
                     if(!isset($graph[$property])) {
                         $graph[$property] = array();
                     }
-                    
+
                     $graph[$property][] = $data;
                     unset($data);
-                    
+
                     break;
-                
+
                 case self::OG_VIDEO:
                     $data = array(
                         $property . ':url' => $content
                     );
-                    
+
                     for($j = ($i+1); $j <= ($i+4); $j++) {
                         if(isset($metas[$j])) {
                             $next = $metas[$j];
@@ -318,21 +325,21 @@ abstract class Opengraph implements Iterator, Serializable, Countable
                             }
                         }
                     }
-                    
+
                     if(!isset($graph[$property])) {
                         $graph[$property] = array();
                     }
-                    
+
                     $graph[$property][] = $data;
                     unset($data);
-                    
+
                     break;
-                
+
                 case self::OG_AUDIO:
                     $data = array(
                         $property . ':url' => $content
                     );
-                    
+
                     for($j = ($i+1); $j <= ($i+2); $j++) {
                         if(isset($metas[$j])) {
                             $next = $metas[$j];
@@ -351,16 +358,16 @@ abstract class Opengraph implements Iterator, Serializable, Countable
                             }
                         }
                     }
-                    
+
                     if(!isset($graph[$property])) {
                         $graph[$property] = array();
                     }
-                    
+
                     $graph[$property][] = $data;
                     unset($data);
-                
+
                     break;
-                
+
                 default:
                     $denyProperties = array(
                         self::OG_AUDIO_SECURE_URL,
@@ -374,98 +381,98 @@ abstract class Opengraph implements Iterator, Serializable, Countable
                         self::OG_IMAGE_WIDTH,
                         self::OG_IMAGE_TYPE
                     );
-                    
+
                     if(!in_array($property, $denyProperties)) {
                         $graph[$property] = $content;
                         unset($metas[$i]);
                     }
-                    
+
             }
         }
         unset($metas);
-        
+
         return $graph;
-    }    
-    
+    }
+
     /**
      * Rewind the Iterator to the first element
-     * 
+     *
      * @return void
      */
     public function rewind()
-    { 
-        reset(static::$storage); 
-        $this->_position = 0; 
+    {
+        reset(static::$storage);
+        $this->_position = 0;
     }
-    
+
     /**
      * Return the current element
-     * 
+     *
      * @return mixed
      */
     public function current()
     {
         return current(static::$storage);
     }
-    
+
     /**
      * Return the key of the current element
-     * 
+     *
      * @return scalar
      */
 	public function key()
 	{
 	    return key(static::$storage);
 	}
-	
+
     /**
      * Move forward to next element
-     * 
+     *
      * @return void
      */
     public function next()
     {
-        next(static::$storage); 
-        ++$this->_position; 
+        next(static::$storage);
+        ++$this->_position;
     }
-    
+
     /**
      * Checks if current position is valid
-     * 
+     *
      * @return boolean
      */
     public function valid()
     {
-        return $this->_position < sizeof(static::$storage); 
+        return $this->_position < sizeof(static::$storage);
     }
-    
+
     /**
      * Count elements of an object
-     * 
+     *
      * @return integer
      */
     public function count()
     {
         return count(static::$storage);
     }
-    
+
     /**
      * String representation of object
-     * 
+     *
      * @return string
      */
-    public function serialize() 
+    public function serialize()
     {
         return serialize(static::$storage);
     }
-    
+
     /**
      * Constructs the object form string
-     * 
-     * @param  string $data The string representation of the object. 
+     *
+     * @param  string $data The string representation of the object.
      * @return void
      */
-    public function unserialize($data) 
+    public function unserialize($data)
     {
         static::$storage = unserialize($data);
     }
