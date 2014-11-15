@@ -50,7 +50,12 @@ class Reader extends Opengraph
             if ($tag->hasAttribute('property') && $tag->hasAttribute('content')) {
                 $this->addMeta($tag->getAttribute('property'), $tag->getAttribute('content'), self::APPEND);
             } 
+            
+            else if ($tag->hasAttribute('name') && $tag->hasAttribute('content')) {
+                $this->addMeta($tag->getAttribute('name'), $tag->getAttribute('content'), self::APPEND);
+            } 
         }
+        
         unset($dom);
         
         return $this;
