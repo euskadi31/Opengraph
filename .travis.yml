@@ -6,10 +6,10 @@ php:
   - 5.6
   - hhvm
   - hhvm-nightly
-before_script: 
+before_script:
     - curl -s https://getcomposer.org/installer | php
     - php composer.phar install --dev
-script: ./vendor/atoum/atoum/bin/atoum --glob Tests/Units/
+script: ./vendor/bin/atoum --glob Tests/Units/
 matrix:
     allow_failures:
         - php: hhvm
