@@ -476,4 +476,14 @@ abstract class Opengraph implements Iterator, Serializable, Countable
     {
         static::$storage = unserialize($data);
     }
+
+    /**
+     * Clear elements of storage
+     *
+     * @return void
+     */
+    public function clear()
+    {
+        static::$storage->exchangeArray([]);
+    }
 }
