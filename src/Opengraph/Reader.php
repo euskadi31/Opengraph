@@ -45,12 +45,20 @@ class Reader extends Opengraph
         }
         
         libxml_use_internal_errors($old_libxml_error);
-        
-        foreach($dom->getElementsByTagName('meta') as $tag) { 
-            if ($tag->hasAttribute('property') && $tag->hasAttribute('content')) {
+
+        foreach($dom->getElementsByTagName('meta') as $tag) {
+            if($tag->hasAttribute('name') && $tag->hasAttribute('content') && $tag->getAttribute('name') == 'description') {
+                $this->addMeta('non-og-description', $tag->getAttribute('content'), self::APPEND);
+            } else if($tag->hasAttribute('property') && $tag->hasAttribute('content')) {
                 $this->addMeta($tag->getAttribute('property'), $tag->getAttribute('content'), self::APPEND);
-            } 
+            }
         }
+
+        $titles = $dom->getElementsByTagName('title');
+        if ($titles->length > 0) {
+            $this->addMeta('non-og-title', $titles->item(0)->textContent, self::APPEND);
+        }
+
         unset($dom);
         
         return $this;
