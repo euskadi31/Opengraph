@@ -95,6 +95,10 @@ abstract class Opengraph implements Iterator, Serializable, Countable
     const TYPE_BOOK                 = 'book';
     const TYPE_PROFILE              = 'profile';
     const TYPE_WEBSITE              = 'website';
+    
+    const TYPE_PRODUCT              = 'product';
+    const TYPE_PRODUCT_GROUP        = 'product.group';
+    const TYPE_PRODUCT_ITEM         = 'product.item';
 
     /**
      * Article content fields
