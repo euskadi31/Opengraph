@@ -53,11 +53,11 @@ class Writer extends Opengraph
      * 
      * @return String
      */
-    public function render()
+    public function render($indent = "\t")
     {
         $html = '';
         foreach(self::$storage as $meta) {
-            $html .= "\t" . $meta->render() . PHP_EOL;
+            $html .= $indent . $meta->render() . PHP_EOL;
         }
         
         return $html;
