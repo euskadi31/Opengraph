@@ -87,21 +87,24 @@ class Reader extends Opengraph\Test\Unit
         ->isInstanceOf('\RuntimeException')
         ->hasMessage('Contents is empty');
 
-        $html = '<meta property="og:url" content="http://www.imdb.com/title/tt1074638/" />
+        $html = '<title>Skyfall Title</title>
+        <meta property="og:url" content="http://www.imdb.com/title/tt1074638/" />
         <meta property="og:title" content="Skyfall (2012)"/>
         <meta property="og:type" content="video.movie"/>
         <meta property="og:image" content="http://ia.media-imdb.com/images/M/MV5BMTczMjQ5NjE4NV5BMl5BanBnXkFtZTcwMjk0NjAwNw@@._V1._SX95_SY140_.jpg"/>
-        <meta property="og:site_name" content="IMDb"/>';
-        
+        <meta property="og:site_name" content="IMDb"/>
+        <meta name="description" content="Skyfall meta description" />
+        <meta property="og:description" content="Skyfall og description"/>';
+
         $reader = new Opengraph\Reader();
         
         $this->assert->object($reader)
             ->isInstanceOf('\Opengraph\Reader');
         
-        $reader->parse($html);
+        $reader->parse($html, true);
 
         $this->assert->integer($reader->count())
-            ->isEqualTo(5);
+            ->isEqualTo(8);
         
         $this->assert->array($reader->getArrayCopy())->isEqualTo(array(
             'og:url' => 'http://www.imdb.com/title/tt1074638/',
@@ -112,7 +115,31 @@ class Reader extends Opengraph\Test\Unit
                     'og:image:url' => 'http://ia.media-imdb.com/images/M/MV5BMTczMjQ5NjE4NV5BMl5BanBnXkFtZTcwMjk0NjAwNw@@._V1._SX95_SY140_.jpg',
                 ),
             ),
-            'og:site_name' => 'IMDb'
+            'og:site_name' => 'IMDb',
+            'non-og-description' => 'Skyfall meta description',
+            'og:description' => 'Skyfall og description',
+            'non-og-title' => 'Skyfall Title'
         ));
+
+        $reader = new Opengraph\Reader();
+
+        $reader->parse($html, false);
+
+        $this->assert->integer($reader->count())
+            ->isEqualTo(6);
+
+        $this->assert->array($reader->getArrayCopy())->isEqualTo(array(
+            'og:url' => 'http://www.imdb.com/title/tt1074638/',
+            'og:title' => 'Skyfall (2012)',
+            'og:type' => 'video.movie',
+            'og:image' => array(
+                0 => array(
+                    'og:image:url' => 'http://ia.media-imdb.com/images/M/MV5BMTczMjQ5NjE4NV5BMl5BanBnXkFtZTcwMjk0NjAwNw@@._V1._SX95_SY140_.jpg',
+                ),
+            ),
+            'og:site_name' => 'IMDb',
+            'og:description' => 'Skyfall og description'
+        ));
+
     }
 }

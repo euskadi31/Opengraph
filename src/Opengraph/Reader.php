@@ -29,12 +29,13 @@ class Reader extends Opengraph
     }
 
     /**
-     * Parse html tags
-     * 
-     * @param String $contents
-     * @return Array
+     * parse html tags
+     *
+     * @param $contents
+     * @param bool $includeDefaults
+     * @return $this
      */
-    public function parse($contents)
+    public function parse($contents, $includeDefaults = false)
     {
         $old_libxml_error = libxml_use_internal_errors(true);
         
@@ -45,12 +46,22 @@ class Reader extends Opengraph
         }
         
         libxml_use_internal_errors($old_libxml_error);
-        
-        foreach($dom->getElementsByTagName('meta') as $tag) { 
-            if ($tag->hasAttribute('property') && $tag->hasAttribute('content')) {
+
+        foreach($dom->getElementsByTagName('meta') as $tag) {
+            if($includeDefaults && $tag->hasAttribute('name') && $tag->hasAttribute('content') && $tag->getAttribute('name') == 'description') {
+                $this->addMeta('non-og-description', $tag->getAttribute('content'), self::APPEND);
+            } else if($tag->hasAttribute('property') && $tag->hasAttribute('content')) {
                 $this->addMeta($tag->getAttribute('property'), $tag->getAttribute('content'), self::APPEND);
-            } 
+            }
         }
+
+        if($includeDefaults) {
+            $titles = $dom->getElementsByTagName('title');
+            if ($titles->length > 0) {
+                $this->addMeta('non-og-title', $titles->item(0)->textContent, self::APPEND);
+            }
+        }
+
         unset($dom);
         
         return $this;
