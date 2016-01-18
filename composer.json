@@ -1,5 +1,5 @@
 {
-    "name": "ahonnecke/Opengraph",
+    "name": "euskadi31/Opengraph",
     "type": "library",
     "description": "A PHP 5.3+ framework for OpenGraph Protocol",
     "keywords": ["sdk","opengraph", "og", "OpenGraph Protocol"],
