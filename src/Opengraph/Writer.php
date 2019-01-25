@@ -49,6 +49,25 @@ class Writer extends Opengraph
     }
     
     /**
+     * Write Opengraph from Json
+     * 
+     * @param String $json
+     * @return \Opengraph\Writer return a new Writer
+     */
+    public static function fromJson($json)
+    {
+        $jsonDecoded = json_decode($json, true);
+
+        $writer = new Writer();
+
+        array_walk_recursive($jsonDecoded, function($v, $k) use ($writer) {
+            $writer->append($k, $v);
+        });
+
+        return $writer;
+    }
+
+    /**
      * Render all meta tags
      * 
      * @return String
