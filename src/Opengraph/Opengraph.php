@@ -52,6 +52,10 @@ abstract class Opengraph implements Iterator, Serializable, Countable
     const OG_VIDEO_WIDTH        = 'og:video:width';
     const OG_VIDEO_HEIGHT       = 'og:video:height';
 
+    const OG_AVAILABILITY       = 'og:availability';
+    const OG_PRICE_AMOUNT       = 'og:price:amount';
+    const OG_PRICE_CURRENCY     = 'og:price:currency';
+
     /**
      * Facebook Metadata
      */
