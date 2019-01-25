@@ -1,25 +1,36 @@
 <?php
+/*
+ * This file is part of the RedisBundle package.
+ *
+ * (c) Axel Etcheverry <axel@etcheverry.biz>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-namespace Opengraph\Tests\Units;
+use PHPUnit\Framework\TestCase;
 
-require_once __DIR__ . '/../../src/Opengraph/Test/Unit.php';
-require_once __DIR__ . '/../../src/Opengraph/Meta.php';
-require_once __DIR__ . '/../../src/Opengraph/Opengraph.php';
-require_once __DIR__ . '/../../src/Opengraph/Reader.php';
-
-use Opengraph;
-
-class Reader extends Opengraph\Test\Unit
+class Reader extends TestCase
 {
     public function testClass()
     {
-        $this->assert->testedClass
-    		->isSubClassOf('\Opengraph\Opengraph')
-    		->hasInterface('\Iterator')
-    		->hasInterface('\Serializable')
-    		->hasInterface('\Countable');
+        $reader = new Opengraph\Reader();
+
+        $this->assertInstanceOf('\Opengraph\Opengraph', $reader);
+        $this->assertInstanceOf('\Iterator', $reader);
+        $this->assertInstanceOf('\Serializable', $reader);
+        $this->assertInstanceOf('\Countable', $reader);
     }
-    
+
+    public function testReaderParseException()
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Contents is empty');
+
+        $reader = new Opengraph\Reader();
+        $reader->parse('');
+    }
+
     public function testReader()
     {
         $html = '<meta property="og:url" content="http://www.imdb.com/title/tt1074638/" />
@@ -28,64 +39,51 @@ class Reader extends Opengraph\Test\Unit
         <meta property="og:image" content="http://ia.media-imdb.com/images/M/MV5BMTczMjQ5NjE4NV5BMl5BanBnXkFtZTcwMjk0NjAwNw@@._V1._SX95_SY140_.jpg"/>
         <meta property="og:site_name" content="IMDb"/>
         <meta property="fb:app_id" content="115109575169727"/>';
-        
+
         $reader = new Opengraph\Reader();
-        
-        $this->assert->object($reader)
-            ->isInstanceOf('\Opengraph\Reader');
-        
+
+        $this->assertInstanceOf('\Opengraph\Reader', $reader);
+
         $reader->parse($html);
-        
-        $this->assert->integer($reader->count())
-            ->isEqualTo(6);
-        
-        $this->assert->array($reader->getArrayCopy())->isEqualTo(array(
+
+        $this->assertEquals(6, $reader->count());
+
+        $this->assertEquals([
             'og:url' => 'http://www.imdb.com/title/tt1074638/',
             'og:title' => 'Skyfall (2012)',
             'og:type' => 'video.movie',
-            'og:image' => array(
-                0 => array(
+            'og:image' => [
+                0 => [
                     'og:image:url' => 'http://ia.media-imdb.com/images/M/MV5BMTczMjQ5NjE4NV5BMl5BanBnXkFtZTcwMjk0NjAwNw@@._V1._SX95_SY140_.jpg',
-                ),
-            ),
+                ],
+            ],
             'og:site_name' => 'IMDb',
             'fb:app_id' => '115109575169727',
-        ));
-        
-        $this->assert->object($reader->getMetas())
-            ->isInstanceOf('\ArrayObject');
-        
-        $this->assert->object($reader->current())
-            ->isInstanceOf('\Opengraph\Meta');
-            
-        $this->assert->integer($reader->key())
-            ->isEqualTo(0);
-        
+        ], $reader->getArrayCopy());
+
+        $this->assertInstanceOf('\ArrayObject', $reader->getMetas());
+
+        $this->assertInstanceOf('\Opengraph\Meta', $reader->current());
+
+        $this->assertEquals(0, $reader->key());
+
         $reader->next();
-        
-        $this->assert->integer($reader->key())
-            ->isEqualTo(1);
-            
-        $this->assert->boolean($reader->valid())->isTrue();
-        
+
+        $this->assertEquals(1, $reader->key());
+
+        $this->assertTrue($reader->valid());
+
         $reader->next();
         $reader->next();
         $reader->next();
         $reader->next();
         $reader->next();
-        
-        $this->assert->boolean($reader->valid())->isFalse();
-        
+
+        $this->assertFalse($reader->valid());
+
         $reader->rewind();
-        
-        $this->assert->integer($reader->key())
-            ->isEqualTo(0);
-        
-        $this->assert->exception(function() use ($reader) {
-        	$reader->parse('');
-        })
-        ->isInstanceOf('\RuntimeException')
-        ->hasMessage('Contents is empty');
+
+        $this->assertEquals(0, $reader->key());
 
         $html = '<title>Skyfall Title</title>
         <meta property="og:url" content="http://www.imdb.com/title/tt1074638/" />
@@ -97,49 +95,45 @@ class Reader extends Opengraph\Test\Unit
         <meta property="og:description" content="Skyfall og description"/>';
 
         $reader = new Opengraph\Reader();
-        
-        $this->assert->object($reader)
-            ->isInstanceOf('\Opengraph\Reader');
-        
+
+        $this->assertInstanceOf('\Opengraph\Reader', $reader);
+
         $reader->parse($html, true);
 
-        $this->assert->integer($reader->count())
-            ->isEqualTo(8);
-        
-        $this->assert->array($reader->getArrayCopy())->isEqualTo(array(
+        $this->assertEquals(8, $reader->count());
+
+        $this->assertEquals([
             'og:url' => 'http://www.imdb.com/title/tt1074638/',
             'og:title' => 'Skyfall (2012)',
             'og:type' => 'video.movie',
-            'og:image' => array(
-                0 => array(
+            'og:image' => [
+                0 => [
                     'og:image:url' => 'http://ia.media-imdb.com/images/M/MV5BMTczMjQ5NjE4NV5BMl5BanBnXkFtZTcwMjk0NjAwNw@@._V1._SX95_SY140_.jpg',
-                ),
-            ),
+                ],
+            ],
             'og:site_name' => 'IMDb',
             'non-og-description' => 'Skyfall meta description',
             'og:description' => 'Skyfall og description',
             'non-og-title' => 'Skyfall Title'
-        ));
+        ], $reader->getArrayCopy());
 
         $reader = new Opengraph\Reader();
 
         $reader->parse($html, false);
 
-        $this->assert->integer($reader->count())
-            ->isEqualTo(6);
+        $this->assertEquals(6, $reader->count());
 
-        $this->assert->array($reader->getArrayCopy())->isEqualTo(array(
+        $this->assertEquals([
             'og:url' => 'http://www.imdb.com/title/tt1074638/',
             'og:title' => 'Skyfall (2012)',
             'og:type' => 'video.movie',
-            'og:image' => array(
-                0 => array(
+            'og:image' => [
+                0 => [
                     'og:image:url' => 'http://ia.media-imdb.com/images/M/MV5BMTczMjQ5NjE4NV5BMl5BanBnXkFtZTcwMjk0NjAwNw@@._V1._SX95_SY140_.jpg',
-                ),
-            ),
+                ],
+            ],
             'og:site_name' => 'IMDb',
             'og:description' => 'Skyfall og description'
-        ));
-
+        ], $reader->getArrayCopy());
     }
 }
