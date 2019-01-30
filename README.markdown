@@ -2,15 +2,7 @@
 
 [![Build Status](https://secure.travis-ci.org/euskadi31/Opengraph.png)](http://travis-ci.org/euskadi31/Opengraph)
 
-## Test with [Atoum](https://github.com/atoum/atoum)
-
-	cd Opengraph/
-    curl -s https://getcomposer.org/installer | php
-    php composer.phar install --dev
-	./vendor/atoum/atoum/bin/atoum --glob Tests/Units/
-
-
-## Writer
+## Write Opengraph
 
 ``` php
 <?php
@@ -45,7 +37,7 @@ Output
     {"og:title":"The Rock","og:type":"video.movie","og:url":"http:\/\/www.imdb.com\/title\/tt0117500\/","og:image":[{"og:image:url":"http:\/\/ia.media-imdb.com\/images\/rock.jpg"}]}
 ```
 
-## Reader
+## Parse Opengraph From Url
 
 ``` php
 <?php
@@ -64,6 +56,7 @@ print_r($opengraph->getArrayCopy());
 
 Output
 
+```
 Array
 (
     [og:url] => http://www.imdb.com/title/tt0117500/
@@ -85,3 +78,4 @@ Array
     [og:site_name] => IMDb
     [og:description] => Directed by Michael Bay.  With Sean Connery, Nicolas Cage, Ed Harris, John Spencer. A mild-mannered chemist and an ex-con must lead the counterstrike when a rogue group of military men, led by a renegade general, threaten a nerve gas attack from Alcatraz against San Francisco.
 )
+```
