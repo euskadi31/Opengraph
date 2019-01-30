@@ -14,21 +14,22 @@
 
 ``` php
 <?php
-namespace Application;
+namespace Demo;
 
-require_once __DIR__ . '/../src/Opengraph/Meta.php';
-require_once __DIR__ . '/../src/Opengraph/Opengraph.php';
-require_once __DIR__ . '/../src/Opengraph/Writer.php';
+require '../vendor/autoload.php';
 
-use Opengraph;
+use Opengraph\Opengraph,
+    Opengraph\RenderHtml,
+    Opengraph\RenderJson;
 
-$writer = new Opengraph\Writer();
-$writer->append(Opengraph\Writer::OG_TITLE, 'The Rock');
-$writer->append(Opengraph\Writer::OG_TYPE, Opengraph\Writer::TYPE_VIDEO_MOVIE);
-$writer->append(Opengraph\Writer::OG_URL, 'http://www.imdb.com/title/tt0117500/');
-$writer->append(Opengraph\Writer::OG_IMAGE, 'http://ia.media-imdb.com/images/rock.jpg');
+$og = new Opengraph();
+$og->addMeta(Opengraph::OG_TITLE, 'The Rock');
+$og->addMeta(Opengraph::OG_TYPE,  Opengraph::TYPE_VIDEO_MOVIE);
+$og->addMeta(Opengraph::OG_URL,   'http://www.imdb.com/title/tt0117500/');
+$og->addMeta(Opengraph::OG_IMAGE, 'http://ia.media-imdb.com/images/rock.jpg');
 
-echo $writer->render() . PHP_EOL;
+echo $og->render(new RenderHtml());
+echo $og->render(new RenderJson());
 
 ?>
 ```
@@ -40,43 +41,47 @@ Output
     <meta property="og:type" content="video.movie" />
     <meta property="og:url" content="http://www.imdb.com/title/tt0117500/" />
     <meta property="og:image" content="http://ia.media-imdb.com/images/rock.jpg" />
+
+    {"og:title":"The Rock","og:type":"video.movie","og:url":"http:\/\/www.imdb.com\/title\/tt0117500\/","og:image":[{"og:image:url":"http:\/\/ia.media-imdb.com\/images\/rock.jpg"}]}
 ```
 
 ## Reader
 
 ``` php
 <?php
-namespace Application;
+namespace DemoParser;
 
-require_once __DIR__ . '/../src/Opengraph/Meta.php';
-require_once __DIR__ . '/../src/Opengraph/Opengraph.php';
-require_once __DIR__ . '/../src/Opengraph/Reader.php';
+require '../vendor/autoload.php';
 
 use Opengraph;
 
-$reader = new Opengraph\Reader();
-$reader->parse(file_get_contents('http://www.imdb.com/title/tt0117500/'));
-print_r($reader->getArrayCopy());
+$parser = new ParserHtml(file_get_contents('http://www.imdb.com/title/tt0117500/'));
+$opengraph = $parser->parse();
+print_r($opengraph->getArrayCopy());
 
 ?>
 ```
 
 Output
 
-    Array
-    (
-        [og:url] => http://www.imdb.com/title/tt0117500/
-        [og:title] => Rock (1996)
-        [og:type] => video.movie
-        [og:image] => Array
-            (
-                [0] => Array
-                    (
-                        [og:image:url] => http://ia.media-imdb.com/images/M/MV5BMTM3MTczOTM1OF5BMl5BanBnXkFtZTYwMjc1NDA5._V1._SX98_SY140_.jpg
-                    )
+Array
+(
+    [og:url] => http://www.imdb.com/title/tt0117500/
+    [pageId] => tt0117500
+    [pageType] => title
+    [subpageType] => main
+    [og:image] => Array
+        (
+            [0] => Array
+                (
+                    [og:image:url] => https://m.media-amazon.com/images/M/MV5BZDJjOTE0N2EtMmRlZS00NzU0LWE0ZWQtM2Q3MWMxNjcwZjBhXkEyXkFqcGdeQXVyNDk3NzU2MTQ@._V1_UY1200_CR90,0,630,1200_AL_.jpg
+                )
 
-            )
+        )
 
-        [og:site_name] => IMDb
-        [fb:app_id] => 115109575169727
-    )
+    [og:type] => video.movie
+    [fb:app_id] => 115109575169727
+    [og:title] => The Rock (1996)
+    [og:site_name] => IMDb
+    [og:description] => Directed by Michael Bay.  With Sean Connery, Nicolas Cage, Ed Harris, John Spencer. A mild-mannered chemist and an ex-con must lead the counterstrike when a rogue group of military men, led by a renegade general, threaten a nerve gas attack from Alcatraz against San Francisco.
+)
