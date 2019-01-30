@@ -1,5 +1,5 @@
 {
-    "name": "brunomp/Opengraph",
+    "name": "brunomp/opengraph",
     "type": "library",
     "description": "A PHP 5.3+ framework for OpenGraph Protocol",
     "keywords": ["opengraph", "og", "OpenGraph Protocol"],
