@@ -31,6 +31,7 @@ class Opengraph implements Iterator, Serializable, Countable
     /**
      * Optional Metadata
      */
+    const OG_IMAGE_URL          = 'og:image:url';
     const OG_IMAGE_SECURE_URL   = 'og:image:secure_url';
     const OG_IMAGE_TYPE         = 'og:image:type';
     const OG_IMAGE_WIDTH        = 'og:image:width';
@@ -265,15 +266,16 @@ class Opengraph implements Iterator, Serializable, Countable
 
         foreach($metas as $i => $meta) {
 
-            $property   = $meta->getProperty();
-            $content    = $meta->getContent();
+            $property = $meta->getProperty();
+            $content  = $meta->getContent();
 
             switch($property) {
 
                 case self::OG_IMAGE:
+                case self::OG_IMAGE_URL:
 
                     $data = array(
-                        $property . ':url' => $content
+                        $property => $content
                     );
 
                     for($j = ($i+1); $j <= ($i+4); $j++) {
@@ -310,7 +312,7 @@ class Opengraph implements Iterator, Serializable, Countable
 
                 case self::OG_VIDEO:
                     $data = array(
-                        $property . ':url' => $content
+                        $property => $content
                     );
 
                     for($j = ($i+1); $j <= ($i+4); $j++) {
@@ -345,7 +347,7 @@ class Opengraph implements Iterator, Serializable, Countable
 
                 case self::OG_AUDIO:
                     $data = array(
-                        $property . ':url' => $content
+                        $property => $content
                     );
 
                     for($j = ($i+1); $j <= ($i+2); $j++) {
