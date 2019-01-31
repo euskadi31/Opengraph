@@ -34,7 +34,7 @@ Output
     <meta property="og:url" content="http://www.imdb.com/title/tt0117500/" />
     <meta property="og:image" content="http://ia.media-imdb.com/images/rock.jpg" />
 
-    {"og:title":"The Rock","og:type":"video.movie","og:url":"http:\/\/www.imdb.com\/title\/tt0117500\/","og:image":[{"og:image:url":"http:\/\/ia.media-imdb.com\/images\/rock.jpg"}]}
+    {"og:title":"The Rock","og:type":"video.movie","og:url":"http:\/\/www.imdb.com\/title\/tt0117500\/","og:image":[{"og:image":"http:\/\/ia.media-imdb.com\/images\/rock.jpg"}]}
 ```
 
 ## Parse Opengraph From Url
@@ -67,7 +67,7 @@ Array
         (
             [0] => Array
                 (
-                    [og:image:url] => https://m.media-amazon.com/images/M/MV5BZDJjOTE0N2EtMmRlZS00NzU0LWE0ZWQtM2Q3MWMxNjcwZjBhXkEyXkFqcGdeQXVyNDk3NzU2MTQ@._V1_UY1200_CR90,0,630,1200_AL_.jpg
+                    [og:image] => https://m.media-amazon.com/images/M/MV5BZDJjOTE0N2EtMmRlZS00NzU0LWE0ZWQtM2Q3MWMxNjcwZjBhXkEyXkFqcGdeQXVyNDk3NzU2MTQ@._V1_UY1200_CR90,0,630,1200_AL_.jpg
                 )
 
         )
