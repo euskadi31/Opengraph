@@ -2,6 +2,12 @@
 
 [![Build Status](https://secure.travis-ci.org/euskadi31/Opengraph.png)](http://travis-ci.org/euskadi31/Opengraph)
 
+## Install
+
+```
+composer require brunomp/opengraph
+```
+
 ## Write Opengraph
 
 ``` php
