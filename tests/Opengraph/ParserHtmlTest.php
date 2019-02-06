@@ -8,30 +8,22 @@
  * file that was distributed with this source code.
  */
 
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase,
+    Opengraph\Opengraph,
+    Opengraph\ParserHtml;
 
-class Reader extends TestCase
+class ParserHtmlTest extends TestCase
 {
-    public function testClass()
-    {
-        $reader = new Opengraph\Reader();
-
-        $this->assertInstanceOf('\Opengraph\Opengraph', $reader);
-        $this->assertInstanceOf('\Iterator', $reader);
-        $this->assertInstanceOf('\Serializable', $reader);
-        $this->assertInstanceOf('\Countable', $reader);
-    }
-
-    public function testReaderParseException()
+    public function testParseException()
     {
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Contents is empty');
+        $this->expectExceptionMessage('Html is empty');
 
-        $reader = new Opengraph\Reader();
-        $reader->parse('');
+        $parser = new ParserHtml('');
+        $parser->parse();
     }
 
-    public function testReader()
+    public function testParse()
     {
         $html = '<meta property="og:url" content="http://www.imdb.com/title/tt1074638/" />
         <meta property="og:title" content="Skyfall (2012)"/>
@@ -40,13 +32,12 @@ class Reader extends TestCase
         <meta property="og:site_name" content="IMDb"/>
         <meta property="fb:app_id" content="115109575169727"/>';
 
-        $reader = new Opengraph\Reader();
+        $parser1 = new ParserHtml($html);
+        $opengraph1 = $parser1->parse();
 
-        $this->assertInstanceOf('\Opengraph\Reader', $reader);
+        $this->assertInstanceOf('\Opengraph\Opengraph', $opengraph1);
 
-        $reader->parse($html);
-
-        $this->assertEquals(6, $reader->count());
+        $this->assertEquals(6, $opengraph1->count());
 
         $this->assertEquals([
             'og:url' => 'http://www.imdb.com/title/tt1074638/',
@@ -59,31 +50,31 @@ class Reader extends TestCase
             ],
             'og:site_name' => 'IMDb',
             'fb:app_id' => '115109575169727',
-        ], $reader->getArrayCopy());
+        ], $opengraph1->getArrayCopy());
 
-        $this->assertInstanceOf('\ArrayObject', $reader->getMetas());
+        $this->assertInstanceOf('\ArrayObject', $opengraph1->getMetas());
 
-        $this->assertInstanceOf('\Opengraph\Meta', $reader->current());
+        $this->assertInstanceOf('\Opengraph\Meta', $opengraph1->current());
 
-        $this->assertEquals(0, $reader->key());
+        $this->assertEquals(0, $opengraph1->key());
 
-        $reader->next();
+        $opengraph1->next();
 
-        $this->assertEquals(1, $reader->key());
+        $this->assertEquals(1, $opengraph1->key());
 
-        $this->assertTrue($reader->valid());
+        $this->assertTrue($opengraph1->valid());
 
-        $reader->next();
-        $reader->next();
-        $reader->next();
-        $reader->next();
-        $reader->next();
+        $opengraph1->next();
+        $opengraph1->next();
+        $opengraph1->next();
+        $opengraph1->next();
+        $opengraph1->next();
 
-        $this->assertFalse($reader->valid());
+        $this->assertFalse($opengraph1->valid());
 
-        $reader->rewind();
+        $opengraph1->rewind();
 
-        $this->assertEquals(0, $reader->key());
+        $this->assertEquals(0, $opengraph1->key());
 
         $html = '<title>Skyfall Title</title>
         <meta property="og:url" content="http://www.imdb.com/title/tt1074638/" />
@@ -94,13 +85,12 @@ class Reader extends TestCase
         <meta name="description" content="Skyfall meta description" />
         <meta property="og:description" content="Skyfall og description"/>';
 
-        $reader = new Opengraph\Reader();
+        $parser2 = new ParserHtml($html, true);
+        $opengraph2 = $parser2->parse();
 
-        $this->assertInstanceOf('\Opengraph\Reader', $reader);
+        $this->assertInstanceOf('\Opengraph\Opengraph', $opengraph2);
 
-        $reader->parse($html, true);
-
-        $this->assertEquals(8, $reader->count());
+        $this->assertEquals(8, $opengraph2->count());
 
         $this->assertEquals([
             'og:url' => 'http://www.imdb.com/title/tt1074638/',
@@ -115,13 +105,12 @@ class Reader extends TestCase
             'non-og-description' => 'Skyfall meta description',
             'og:description' => 'Skyfall og description',
             'non-og-title' => 'Skyfall Title'
-        ], $reader->getArrayCopy());
+        ], $opengraph2->getArrayCopy());
 
-        $reader = new Opengraph\Reader();
+        $parser3 = new ParserHtml($html, false);
+        $opengraph3 = $parser3->parse();
 
-        $reader->parse($html, false);
-
-        $this->assertEquals(6, $reader->count());
+        $this->assertEquals(6, $opengraph3->count());
 
         $this->assertEquals([
             'og:url' => 'http://www.imdb.com/title/tt1074638/',
@@ -134,6 +123,6 @@ class Reader extends TestCase
             ],
             'og:site_name' => 'IMDb',
             'og:description' => 'Skyfall og description'
-        ], $reader->getArrayCopy());
+        ], $opengraph3->getArrayCopy());
     }
 }

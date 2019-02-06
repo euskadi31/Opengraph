@@ -18,7 +18,7 @@ use ArrayIterator;
 use Serializable;
 use Countable;
 
-abstract class Opengraph implements Iterator, Serializable, Countable
+class Opengraph implements Iterator, Serializable, Countable
 {
     /**
      * Basic Metadata
@@ -31,6 +31,7 @@ abstract class Opengraph implements Iterator, Serializable, Countable
     /**
      * Optional Metadata
      */
+    const OG_IMAGE_URL          = 'og:image:url';
     const OG_IMAGE_SECURE_URL   = 'og:image:secure_url';
     const OG_IMAGE_TYPE         = 'og:image:type';
     const OG_IMAGE_WIDTH        = 'og:image:width';
@@ -122,7 +123,7 @@ abstract class Opengraph implements Iterator, Serializable, Countable
     /**
      * @var \ArrayObject
      */
-    protected static $storage;
+    protected $storage;
 
     /**
      * @var Integer
@@ -132,8 +133,8 @@ abstract class Opengraph implements Iterator, Serializable, Countable
 
     public function __construct()
     {
-        if(is_null(static::$storage)) {
-            static::$storage = new ArrayObject();
+        if(is_null($this->storage)) {
+            $this->storage = new ArrayObject();
             //static::$position = 0;
         }
     }
@@ -146,7 +147,7 @@ abstract class Opengraph implements Iterator, Serializable, Countable
      * @param String $position
      * @return \Opengraph\Opengraph
      */
-    public function addMeta($property, $content, $position)
+    public function addMeta($property, $content, $position = self::APPEND)
     {
         $content = $this->_normalizeContent($property, $content);
 
@@ -165,11 +166,11 @@ abstract class Opengraph implements Iterator, Serializable, Countable
         }
 
         if($position == self::APPEND) {
-            static::$storage->append(new Meta($property, $content));
+            $this->storage->append(new Meta($property, $content));
         } else {
-            $values = static::$storage->getArrayCopy();
+            $values = $this->storage->getArrayCopy();
             array_unshift($values, new Meta($property, $content));
-            static::$storage->exchangeArray($values);
+            $this->storage->exchangeArray($values);
             unset($values);
         }
 
@@ -184,7 +185,7 @@ abstract class Opengraph implements Iterator, Serializable, Countable
      */
     public function hasMeta($property)
     {
-        foreach(static::$storage as $meta) {
+        foreach($this->storage as $meta) {
             if($meta->getProperty() == $property) {
                 return true;
             }
@@ -201,7 +202,7 @@ abstract class Opengraph implements Iterator, Serializable, Countable
      */
     public function getMeta($property)
     {
-        foreach(static::$storage as $meta) {
+        foreach($this->storage as $meta) {
             if($meta->getProperty() == $property) {
                 return $meta->getContent();
             }
@@ -218,9 +219,9 @@ abstract class Opengraph implements Iterator, Serializable, Countable
      */
     public function removeMeta($property)
     {
-        foreach(static::$storage as $i => $meta) {
+        foreach($this->storage as $i => $meta) {
             if($meta->getProperty() == $property) {
-                unset(static::$storage[$i]);
+                unset($this->storage[$i]);
                 return true;
             }
         }
@@ -233,7 +234,7 @@ abstract class Opengraph implements Iterator, Serializable, Countable
      */
     public function getMetas()
     {
-        return static::$storage;
+        return $this->storage;
     }
 
     /**
@@ -261,19 +262,20 @@ abstract class Opengraph implements Iterator, Serializable, Countable
     {
         $graph = array();
 
-        $metas = static::$storage->getArrayCopy();
+        $metas = $this->storage->getArrayCopy();
 
         foreach($metas as $i => $meta) {
 
-            $property   = $meta->getProperty();
-            $content    = $meta->getContent();
+            $property = $meta->getProperty();
+            $content  = $meta->getContent();
 
             switch($property) {
 
                 case self::OG_IMAGE:
+                case self::OG_IMAGE_URL:
 
                     $data = array(
-                        $property . ':url' => $content
+                        $property => $content
                     );
 
                     for($j = ($i+1); $j <= ($i+4); $j++) {
@@ -310,7 +312,7 @@ abstract class Opengraph implements Iterator, Serializable, Countable
 
                 case self::OG_VIDEO:
                     $data = array(
-                        $property . ':url' => $content
+                        $property => $content
                     );
 
                     for($j = ($i+1); $j <= ($i+4); $j++) {
@@ -345,7 +347,7 @@ abstract class Opengraph implements Iterator, Serializable, Countable
 
                 case self::OG_AUDIO:
                     $data = array(
-                        $property . ':url' => $content
+                        $property => $content
                     );
 
                     for($j = ($i+1); $j <= ($i+2); $j++) {
@@ -403,13 +405,25 @@ abstract class Opengraph implements Iterator, Serializable, Countable
     }
 
     /**
+     * Render metas tags of Opengraph
+     *
+     * @param Opengraph\Render $render
+     * @param Array $configs
+     * @return mixed
+     */
+    public function render(Render $render, array $configs = [])
+    {
+        return $render->render($this, $configs);
+    }
+
+    /**
      * Rewind the Iterator to the first element
      *
      * @return void
      */
     public function rewind()
     {
-        reset(static::$storage);
+        reset($this->storage);
         $this->_position = 0;
     }
 
@@ -420,7 +434,7 @@ abstract class Opengraph implements Iterator, Serializable, Countable
      */
     public function current()
     {
-        return current(static::$storage);
+        return current($this->storage);
     }
 
     /**
@@ -430,7 +444,7 @@ abstract class Opengraph implements Iterator, Serializable, Countable
      */
 	public function key()
 	{
-	    return key(static::$storage);
+	    return key($this->storage);
 	}
 
     /**
@@ -440,7 +454,7 @@ abstract class Opengraph implements Iterator, Serializable, Countable
      */
     public function next()
     {
-        next(static::$storage);
+        next($this->storage);
         ++$this->_position;
     }
 
@@ -451,7 +465,7 @@ abstract class Opengraph implements Iterator, Serializable, Countable
      */
     public function valid()
     {
-        return $this->_position < sizeof(static::$storage);
+        return $this->_position < sizeof($this->storage);
     }
 
     /**
@@ -461,7 +475,7 @@ abstract class Opengraph implements Iterator, Serializable, Countable
      */
     public function count()
     {
-        return count(static::$storage);
+        return count($this->storage);
     }
 
     /**
@@ -471,7 +485,7 @@ abstract class Opengraph implements Iterator, Serializable, Countable
      */
     public function serialize()
     {
-        return serialize(static::$storage);
+        return serialize($this->storage);
     }
 
     /**
@@ -482,7 +496,7 @@ abstract class Opengraph implements Iterator, Serializable, Countable
      */
     public function unserialize($data)
     {
-        static::$storage = unserialize($data);
+        $this->storage = unserialize($data);
     }
 
     /**
@@ -492,6 +506,6 @@ abstract class Opengraph implements Iterator, Serializable, Countable
      */
     public function clear()
     {
-        static::$storage->exchangeArray(array());
+        $this->storage->exchangeArray(array());
     }
 }

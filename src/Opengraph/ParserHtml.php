@@ -14,56 +14,55 @@ namespace Opengraph;
 
 use DOMDocument;
 use RuntimeException;
-use ArrayObject;
+use Opengraph\Opengraph;
 
-class Reader extends Opengraph
+class ParserHtml
 {
-    /**
-     * @var \ArrayObject
-     */
-    protected static $storage;
+    private $html;
+    private $includeDefaults;
     
-    public function __construct()
+    public function __construct($html, $includeDefaults = false)
     {
-        static::$storage = new ArrayObject();
+        $this->html = $html;
+        $this->includeDefaults = $includeDefaults;
     }
 
     /**
      * parse html tags
      *
-     * @param $contents
-     * @param bool $includeDefaults
-     * @return $this
+     * @return Opengraph\Opengraph
      */
-    public function parse($contents, $includeDefaults = false)
+    public function parse()
     {
+        $og = new Opengraph();
+
         $old_libxml_error = libxml_use_internal_errors(true);
         
         $dom = new DOMDocument;
         
-        if(@$dom->loadHTML($contents) === false) {
-            throw new RuntimeException("Contents is empty");
+        if(@$dom->loadHTML($this->html) === false) {
+            throw new RuntimeException("Html is empty");
         }
-        
+
         libxml_use_internal_errors($old_libxml_error);
 
         foreach($dom->getElementsByTagName('meta') as $tag) {
-            if($includeDefaults && $tag->hasAttribute('name') && $tag->hasAttribute('content') && $tag->getAttribute('name') == 'description') {
-                $this->addMeta('non-og-description', $tag->getAttribute('content'), self::APPEND);
+            if($this->includeDefaults && $tag->hasAttribute('name') && $tag->hasAttribute('content') && $tag->getAttribute('name') == 'description') {
+                $og->addMeta('non-og-description', $tag->getAttribute('content'), $og::APPEND);
             } else if($tag->hasAttribute('property') && $tag->hasAttribute('content')) {
-                $this->addMeta($tag->getAttribute('property'), $tag->getAttribute('content'), self::APPEND);
+                $og->addMeta($tag->getAttribute('property'), $tag->getAttribute('content'), $og::APPEND);
             }
         }
 
-        if($includeDefaults) {
+        if($this->includeDefaults) {
             $titles = $dom->getElementsByTagName('title');
             if ($titles->length > 0) {
-                $this->addMeta('non-og-title', $titles->item(0)->textContent, self::APPEND);
+                $og->addMeta('non-og-title', $titles->item(0)->textContent, $og::APPEND);
             }
         }
 
         unset($dom);
         
-        return $this;
+        return $og;
     }
 }
