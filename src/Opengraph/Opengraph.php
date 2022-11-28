@@ -465,6 +465,16 @@ abstract class Opengraph implements Iterator, Serializable, Countable
     }
 
     /**
+     * String representation of object (PHP 8.1)
+     *
+     * @return array
+     */
+    public function __serialize(): array
+    {
+        return (array)serialize(static::$storage);
+    }
+
+    /**
      * String representation of object
      *
      * @return string
@@ -472,6 +482,17 @@ abstract class Opengraph implements Iterator, Serializable, Countable
     public function serialize()
     {
         return serialize(static::$storage);
+    }
+
+    /**
+     * Constructs the object form string (PHP 8.1)
+     *
+     * @param  string $data The string representation of the object.
+     * @return void
+     */
+    public function __unserialize($data): void
+    {
+        static::$storage = unserialize($data);
     }
 
     /**
