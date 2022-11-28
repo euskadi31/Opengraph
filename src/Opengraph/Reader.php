@@ -22,7 +22,7 @@ class Reader extends Opengraph
      * @var \ArrayObject
      */
     protected static $storage;
-    
+
     public function __construct()
     {
         static::$storage = new ArrayObject();
@@ -37,14 +37,18 @@ class Reader extends Opengraph
      */
     public function parse($contents, $includeDefaults = false)
     {
+        if (empty($contents)) {
+            throw new RuntimeException('Contents is empty');
+        }
+
         $old_libxml_error = libxml_use_internal_errors(true);
-        
+
         $dom = new DOMDocument;
-        
+
         if(@$dom->loadHTML($contents) === false) {
             throw new RuntimeException("Contents is empty");
         }
-        
+
         libxml_use_internal_errors($old_libxml_error);
 
         foreach($dom->getElementsByTagName('meta') as $tag) {
@@ -63,7 +67,7 @@ class Reader extends Opengraph
         }
 
         unset($dom);
-        
+
         return $this;
     }
 }
