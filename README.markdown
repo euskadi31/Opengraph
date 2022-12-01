@@ -4,15 +4,14 @@
 
 ## Test with [Atoum](https://github.com/atoum/atoum)
 
-	cd Opengraph/
+    cd Opengraph/
     curl -s https://getcomposer.org/installer | php
     php composer.phar install --dev
-	./vendor/atoum/atoum/bin/atoum --glob Tests/Units/
-
+    ./vendor/bin/phpunit -c phpunit.xml.dist
 
 ## Writer
 
-``` php
+```php
 <?php
 namespace Application;
 
@@ -35,16 +34,16 @@ echo $writer->render() . PHP_EOL;
 
 Output
 
-``` html
-    <meta property="og:title" content="The Rock" />
-    <meta property="og:type" content="video.movie" />
-    <meta property="og:url" content="http://www.imdb.com/title/tt0117500/" />
-    <meta property="og:image" content="http://ia.media-imdb.com/images/rock.jpg" />
+```html
+<meta property="og:title" content="The Rock" />
+<meta property="og:type" content="video.movie" />
+<meta property="og:url" content="http://www.imdb.com/title/tt0117500/" />
+<meta property="og:image" content="http://ia.media-imdb.com/images/rock.jpg" />
 ```
 
 ## Reader
 
-``` php
+```php
 <?php
 namespace Application;
 
